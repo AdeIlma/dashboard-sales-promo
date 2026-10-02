@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dashboard analisa sales & promo DTG x HWG Juli-September 2026: nasional, region, branch, peta trend, hero SKU dan hero promo.">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard Sales & Promo Q3 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="tip" role="tooltip"></div>
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">DTG × HWG · Cost Control / F&amp;B Analyst</div>
+    <h1>Sales &amp; Promo Juli – September 2026</h1>
+    <div class="sub">Sumber: Daily Sales Menu Report ESB, 1 Jul – 30 Sep 2026 · 135 branch · 5 region · promo tanpa Special Price</div>
+  </div>
+  <div class="ctrl" style="margin:0">
+    <label class="lb" for="thr">Ambang naik/turun: <b id="thrv" style="color:var(--ink)">±3%</b>
+      <input id="thr" type="range" min="1" max="10" step="1" value="3"></label>
+  </div>
+</header>
+</div>
+<nav class="tabs" aria-label="Bagian dashboard"><div class="in" role="tablist">
+  <button role="tab" data-t="ringkasan" aria-selected="true">Ringkasan</button>
+  <button role="tab" data-t="region" aria-selected="false">Region</button>
+  <button role="tab" data-t="branch" aria-selected="false">Branch</button>
+  <button role="tab" data-t="trend" aria-selected="false">Peta Trend Branch</button>
+  <button role="tab" data-t="sku" aria-selected="false">Hero SKU</button>
+  <button role="tab" data-t="promo" aria-selected="false">Hero Promo</button>
+</div></nav>
+<main class="wrap">
+
+<section id="t-ringkasan">
+  <div class="kpis" id="kpis"></div>
+  <div class="grid g2">
+    <div class="panel"><div class="ph"><h2>Sales nasional per bulan</h2>
+      <div class="chips" id="natScope"><button class="chip" aria-pressed="true" data-v="nat">Semua branch</button><button class="chip" aria-pressed="false" data-v="lfl">LFL (119 branch)</button></div></div>
+      <div id="chNat"></div>
+      <div class="legend"><span><i style="background:var(--sales)"></i>Non-promo</span><span><i style="background:var(--promo)"></i>Promo (twin, bundling, dll)</span></div>
+    </div>
+    <div class="panel"><div class="ph"><h2>Promo per mekanik</h2><span class="note">Rp miliar per bulan</span></div>
+      <div id="chMech"></div><div class="legend" id="lgMech"></div></div>
+  </div>
+  <div class="panel" style="margin-top:16px"><div class="ph"><h2>Region</h2><span class="note">Klik kartu untuk detail region · Δ = rata-rata sales harian Sep vs Jul</span></div>
+    <div class="regcards" id="regcards"></div></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel"><div class="ph"><h2>Temuan utama</h2></div><ul class="find" id="finds"></ul></div>
+    <div class="panel"><div class="ph"><h2>Kelompok branch LFL</h2><span class="note">Klik bar untuk buka daftar branch</span></div>
+      <h3 style="margin-bottom:6px">Sales</h3><div id="grpS"></div>
+      <h3 style="margin:12px 0 6px">Promo</h3><div id="grpP"></div>
+      <div class="legend" id="lgGrp" style="margin-top:10px"></div></div>
+  </div>
+</section>
+
+<section id="t-region" class="hide">
+  <div class="ctrl"><div class="chips" id="regSel"></div>
+    <div class="chips" id="regScope"><button class="chip" aria-pressed="true" data-v="all">Semua branch</button><button class="chip" aria-pressed="false" data-v="lfl">LFL saja</button></div></div>
+  <div class="kpis" id="regKpis"></div>
+  <div class="grid g2">
+    <div class="panel"><div class="ph"><h2 id="regTblTitle">Ringkasan bulanan</h2></div><div class="tbl" style="max-height:none"><table id="regTbl"></table></div></div>
+    <div class="panel"><div class="ph"><h2>Indeks pertumbuhan (Juli = 100)</h2>
+      <div class="chips" id="idxSel"><button class="chip" aria-pressed="true" data-v="s">Sales</button><button class="chip" aria-pressed="false" data-v="p">Promo</button></div></div>
+      <div id="chIdx"></div><div class="legend" id="lgIdx"></div></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel"><div class="ph"><h2>Bauran mekanik promo</h2><span class="note" id="regMechNote"></span></div><div id="chRegMech"></div><div class="legend" id="lgRegMech"></div></div>
+    <div class="panel"><div class="ph"><h2>Branch di region ini</h2><span class="note">Total sales Q3 · warna = kelompok sales · klik untuk detail</span></div><div id="regBr" style="max-height:420px;overflow:auto"></div></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel"><div class="ph"><h2>Top 10 hero SKU</h2><button class="btnx" data-go="sku">Lihat top 50</button></div><div id="regSku"></div></div>
+    <div class="panel"><div class="ph"><h2>Top 10 hero promo</h2><button class="btnx" data-go="promo">Lihat top 20</button></div><div id="regPro"></div></div>
+  </div>
+</section>
+
+<section id="t-branch" class="hide">
+  <div class="panel">
+    <div class="ctrl">
+      <label class="lb" for="fReg">Region<select id="fReg"></select></label>
+      <label class="lb" for="fSt">Status<select id="fSt"><option value="">Semua</option><option>LFL</option><option>NEW</option><option value="X">Lainnya</option></select></label>
+      <label class="lb" for="fSg">Kelompok sales<select id="fSg"></select></label>
+      <label class="lb" for="fPg">Kelompok promo<select id="fPg"></select></label>
+      <label class="lb" for="fQ">Cari branch<input id="fQ" type="search" placeholder="mis. Magelang"></label>
+      <span class="muted small" id="brCount"></span>
+    </div>
+    <div class="tbl"><table id="brTbl"></table></div>
+    <div class="muted small" style="margin-top:8px">Klik baris untuk melihat detail branch. Klik judul kolom untuk mengurutkan. Δ1 = Agu vs Jul, Δ2 = Sep vs Agu, berbasis sales per hari.</div>
+  </div>
+  <div id="brDetail"></div>
+</section>
+
+<section id="t-trend" class="hide">
+  <div class="kpis" id="trKpis"></div>
+  <div class="panel"><div class="ph"><h2>Matriks kelompok sales × kelompok promo</h2><span class="note">119 branch LFL · klik angka untuk melihat branch-nya</span></div>
+    <div class="matrix" id="matrix"></div>
+    <div class="muted small" style="margin-top:10px" id="grpDef"></div></div>
+  <div class="panel" style="margin-top:16px"><div class="ph"><h2 id="mlTitle">Daftar branch</h2><button class="btnx" id="mlClear">Tampilkan semua LFL</button></div>
+    <div class="tbl" style="max-height:440px"><table id="mlTbl"></table></div></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel"><div class="ph"><h2>Peta sales vs promo</h2><span class="note">Δ Sep vs Jul · ukuran = sales Q3 · klik titik</span></div>
+      <div class="chips" id="scReg" style="margin-bottom:8px"></div><div id="chSc"></div></div>
+    <div class="panel"><div class="ph"><h2>Kelompok per region</h2>
+      <div class="chips" id="grSel"><button class="chip" aria-pressed="true" data-v="s">Sales</button><button class="chip" aria-pressed="false" data-v="p">Promo</button></div></div>
+      <div id="chGr"></div><div class="legend" id="lgGr2"></div>
+      <h3 style="margin:16px 0 8px">Kuadran arah Jul → Sep</h3><div id="quad"></div></div>
+  </div>
+  <div class="panel" style="margin-top:16px"><div class="ph"><h2>Branch baru &amp; non-LFL</h2><span class="note">Ramp-up = sales per hari aktif Sep vs Agu</span></div><div class="tbl" style="max-height:none"><table id="newTbl"></table></div></div>
+</section>
+
+<section id="t-sku" class="hide">
+  <div class="panel">
+    <div class="ctrl">
+      <label class="lb" for="skScope">Cakupan<select id="skScope"></select></label>
+      <label class="lb" for="skQ">Cari SKU<input id="skQ" type="search" placeholder="mis. Atlas"></label>
+      <div class="chips" id="skHs"></div>
+    </div>
+    <div class="grid g2">
+      <div><div id="skKpi" class="mini" style="margin-top:0"></div><div id="chSku"></div></div>
+      <div class="tbl" style="max-height:520px"><table id="skTbl"></table></div>
+    </div>
+    <div class="muted small" style="margin-top:8px" id="skNote"></div>
+  </div>
+</section>
+
+<section id="t-promo" class="hide">
+  <div class="panel">
+    <div class="ctrl">
+      <label class="lb" for="prScope">Cakupan<select id="prScope"></select></label>
+      <label class="lb" for="prQ">Cari paket<input id="prQ" type="search" placeholder="mis. Congyang"></label>
+      <div class="chips" id="prMech"></div>
+    </div>
+    <div class="grid g2">
+      <div><div id="prKpi" class="mini" style="margin-top:0"></div><div id="chPro"></div></div>
+      <div class="tbl" style="max-height:520px"><table id="prTbl"></table></div>
+    </div>
+    <div class="muted small" style="margin-top:8px">Promo = PROMO TWIN, PROMO BUNDLING, MIX AND MATCH, PATUNGAN SQUAD, BONUS GAK NANGGUNG. Special Price tidak dihitung.</div>
+  </div>
+</section>
+
+<div class="defs">
+  <div><b>Sales</b> = Subtotal sebelum service charge &amp; pajak. <b>Promo</b> = paket twin, bundling, party package, buy X get Y, buy more save more, mix &amp; match. Special Price tidak dihitung (tercatat sebagai menu ala carte).</div>
+  <div><b>Sales per hari (ADS)</b> = sales bulan ÷ hari kalender (Jul 31, Agu 31, Sep 30) supaya September yang lebih pendek tidak terlihat turun. <b>LFL</b> = branch yang berjualan penuh sejak awal Juli sampai akhir September.</div>
+  <div>Hero SKU = menu non-promo, Breakage dikeluarkan. Per branch ditampilkan top 20; daftar top 50 per branch ada di file Excel (sheet 3C).</div>
+</div>
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
